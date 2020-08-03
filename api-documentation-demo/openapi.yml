@@ -1,0 +1,16 @@
+openapi: 3.0.0
+components:
+  schemas: {}
+  securitySchemes: {}
+info:
+  title: My demo API
+  description: This is my demo API
+  version: '1'
+paths:
+  /api/hello/:
+    get:
+      operationId: hello
+      summary: Gets a simple message
+      description: |
+        Demonstrates a GET method.
+      responses: {}
