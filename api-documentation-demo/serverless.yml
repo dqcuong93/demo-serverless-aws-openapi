@@ -31,77 +31,101 @@ provider:
 #    variable1: value1
 
 # you can add packaging information here
-#package:
-#  include:
-#    - include-me.py
-#    - include-me-dir/**
-#  exclude:
-#    - exclude-me.py
-#    - exclude-me-dir/**
+package:
+  #  include:
+  #    - include-me.py
+  #    - include-me-dir/**
+  exclude:
+    - .venv/
+    - node_modules/**
 
 functions:
-  hello:
-    handler: handler.hello
+  default_message:
+    handler: message.default_message
     events:
       - http:
-          path: api/hello/
+          path: api/message/
           method: get
           documentation:
             summary: Gets a simple message
             description: |
               Demonstrates a GET method.
+  create_message:
+    handler: message.create_message
+    events:
+      - http:
+          path: api/message/
+          method: post
+          documentation:
+            summary: Create a message of you own
+            description: |
+              Demonstrates a POST method.
 
-#      - websocket: $connect
-#      - s3: ${env:BUCKET}
-#      - schedule: rate(10 minutes)
-#      - sns: greeter-topic
-#      - stream: arn:aws:dynamodb:region:XXXXXX:table/foo/stream/1970-01-01T00:00:00.000
-#      - alexaSkill: amzn1.ask.skill.xx-xx-xx-xx
-#      - alexaSmartHome: amzn1.ask.skill.xx-xx-xx-xx
-#      - iot:
-#          sql: "SELECT * FROM 'some_topic'"
-#      - cloudwatchEvent:
-#          event:
-#            source:
-#              - "aws.ec2"
-#            detail-type:
-#              - "EC2 Instance State-change Notification"
-#            detail:
-#              state:
-#                - pending
-#      - cloudwatchLog: '/aws/lambda/hello'
-#      - cognitoUserPool:
-#          pool: MyUserPool
-#          trigger: PreSignUp
-#      - alb:
-#          listenerArn: arn:aws:elasticloadbalancing:us-east-1:XXXXXX:listener/app/my-load-balancer/50dc6c495c0c9188/
-#          priority: 1
-#          conditions:
-#            host: example.com
-#            path: /hello
+  #      - websocket: $connect
+  #      - s3: ${env:BUCKET}
+  #      - schedule: rate(10 minutes)
+  #      - sns: greeter-topic
+  #      - stream: arn:aws:dynamodb:region:XXXXXX:table/foo/stream/1970-01-01T00:00:00.000
+  #      - alexaSkill: amzn1.ask.skill.xx-xx-xx-xx
+  #      - alexaSmartHome: amzn1.ask.skill.xx-xx-xx-xx
+  #      - iot:
+  #          sql: "SELECT * FROM 'some_topic'"
+  #      - cloudwatchEvent:
+  #          event:
+  #            source:
+  #              - "aws.ec2"
+  #            detail-type:
+  #              - "EC2 Instance State-change Notification"
+  #            detail:
+  #              state:
+  #                - pending
+  #      - cloudwatchLog: '/aws/lambda/hello'
+  #      - cognitoUserPool:
+  #          pool: MyUserPool
+  #          trigger: PreSignUp
+  #      - alb:
+  #          listenerArn: arn:aws:elasticloadbalancing:us-east-1:XXXXXX:listener/app/my-load-balancer/50dc6c495c0c9188/
+  #          priority: 1
+  #          conditions:
+  #            host: example.com
+  #            path: /hello
 
-#    Define function environment variables here
-#    environment:
-#      variable2: value2
+  #    Define function environment variables here
+  #    environment:
+  #      variable2: value2
 
-# you can add CloudFormation resource templates here
-#resources:
-#  Resources:
-#    NewResource:
-#      Type: AWS::S3::Bucket
-#      Properties:
-#        BucketName: my-new-bucket
-#  Outputs:
-#     NewOutput:
-#       Description: "Description for the output"
-#       Value: "Some output value"
+  # you can add CloudFormation resource templates here
+resources:
+  Resources:
+    #    NewResource:
+    #      Type: AWS::S3::Bucket
+    #      Properties:
+    #        BucketName: my-new-bucket
+    #  Outputs:
+    #     NewOutput:
+    #       Description: "Description for the output"
+    #       Value: "Some output value"
+    messageTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: messageTableTest
+        AttributeDefinitions:
+          - AttributeName: message
+            AttributeType: S
+        KeySchema:
+          - AttributeName: message
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
 
 custom:
   documentation:
     version: '1'
-    title: 'My demo API'
-    description: 'This is my demo API'
+    title: 'Demo of API Documentation'
+    description: 'This is a Demo of APIs documentation'
     models: {}
 
 plugins:
   - serverless-openapi-documentation
+  - serverless-python-requirements
