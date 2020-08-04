@@ -3,11 +3,10 @@ import boto3
 
 # Get the service resource.
 dynamodb = boto3.resource('dynamodb')
+table = dynamodb.Table('messageTableTest')
 
 message = "If you see this, it means my function executed successfully! " \
           "you can create your custom message anytime you want!",
-
-table = dynamodb.Table('messageTableTest')
 
 
 def default_message(event, context):
@@ -23,7 +22,7 @@ def default_message(event, context):
 
 
 def create_message(event, context):
-    body = event['body']
+    body = json.loads(event['body'])
 
     if not body:
         response = {
@@ -39,10 +38,13 @@ def create_message(event, context):
                 }
             )
         except Exception as e:
-            body = f'DynamoDB Error: {e}'
-
-        response = {
-            "statusCode": 200,
-            "body": json.dumps(body)
-        }
+            response = {
+                "statusCode": 400,
+                "body": f'DynamoDB Error: {e}'
+            }
+        else:
+            response = {
+                "statusCode": 200,
+                "body": "Your message has been saved"
+            }
     return response
