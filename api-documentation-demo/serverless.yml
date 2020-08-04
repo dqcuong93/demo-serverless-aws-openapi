@@ -36,7 +36,7 @@ package:
   #    - include-me.py
   #    - include-me-dir/**
   exclude:
-    - .venv/
+    - .venv/**
     - node_modules/**
 
 functions:
@@ -110,11 +110,15 @@ resources:
       Properties:
         TableName: messageTableTest
         AttributeDefinitions:
+          - AttributeName: name
+            AttributeType: S
           - AttributeName: message
             AttributeType: S
         KeySchema:
-          - AttributeName: message
+          - AttributeName: name
             KeyType: HASH
+          - AttributeName: message
+            KeyType: RANGE
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1

@@ -12,11 +12,8 @@ table = dynamodb.Table('messageTableTest')
 
 def default_message(event, context):
     body = {
-        "message": {
-            "default message": message,
-            "table information": f'Table created at: {table.creation_date_time}',
-        },
-        "input": event
+        "message": message,
+        # "input": event
     }
     response = {
         "statusCode": 200,
@@ -28,18 +25,24 @@ def default_message(event, context):
 def create_message(event, context):
     body = event['body']
 
-    try:
-        table.put_item(
-            Item={
-                'message': body,
-            }
-        )
-    except Exception as e:
-        body = f'Error: {e}'
+    if not body:
+        response = {
+            "statusCode": 400,
+            "body": "Please input data!"
+        }
+    else:
+        try:
+            table.put_item(
+                Item={
+                    'name': body['name'],
+                    'message': body['message'],
+                }
+            )
+        except Exception as e:
+            body = f'DynamoDB Error: {e}'
 
-    response = {
-        "statusCode": 200,
-        # "body": json.dumps(body)
-        "body": type(body)
-    }
+        response = {
+            "statusCode": 200,
+            "body": json.dumps(body)
+        }
     return response
