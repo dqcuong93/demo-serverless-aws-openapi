@@ -9,18 +9,16 @@ provider:
   runtime: python3.8
   stage: chrisdao
   region: us-east-1
-
-# you can add statements to the Lambda function's IAM Role here
-iamRoleStatements:
-  - Effect: Allow
-    Action:
-      - dynamodb:Query
-      - dynamodb:Scan
-      - dynamodb:GetItem
-      - dynamodb:PutItem
-      - dynamodb:UpdateItem
-      - dynamodb:DeleteItem
-    Resource: "arn:aws:dynamodb:us-east-1:330477736997:table/messageTableTest"
+  iamRoleStatements: # you can add statements to the Lambda function's IAM Role here
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource: "arn:aws:dynamodb:us-east-1:330477736997:table/messageTableTest"
 #    - Effect: "Allow"
 #      Action:
 #        - "s3:ListBucket"
@@ -53,22 +51,47 @@ functions:
     handler: message.default_message
     events:
       - http:
-          path: api/message/
+          path: api/message
           method: get
           documentation:
             summary: Gets a simple message
-            description: |
-              Demonstrates a GET method.
+            description: Demonstrates a GET method.
   create_message:
     handler: message.create_message
     events:
       - http:
-          path: api/message/
+          path: api/message
           method: post
           documentation:
             summary: Create a message of you own
-            description: |
-              Demonstrates a POST method.
+            description: Demonstrates a POST method.
+  get_message:
+    handler: message.get_message
+    events:
+      - http:
+          path: api/message/{name}
+          method: get
+          documentation:
+            summary: Get a specific message
+            description: Demonstrates a GET specific NAME method.
+  put_message:
+    handler: message.put_message
+    events:
+      - http:
+          path: api/message/{name}
+          method: put
+          documentation:
+            summary: Modify your message
+            description: Demonstrates a PUT method.
+  delete_message:
+    handler: message.delete_message
+    events:
+      - http:
+          path: api/message/{name}
+          method: delete
+          documentation:
+            summary: Delete a message you want
+            description: Demonstrates a DELETE method.
 
   #      - websocket: $connect
   #      - s3: ${env:BUCKET}
@@ -121,13 +144,9 @@ resources:
         AttributeDefinitions:
           - AttributeName: name
             AttributeType: S
-          - AttributeName: message
-            AttributeType: S
         KeySchema:
           - AttributeName: name
             KeyType: HASH
-          - AttributeName: message
-            KeyType: RANGE
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1

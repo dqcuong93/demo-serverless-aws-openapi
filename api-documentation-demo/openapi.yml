@@ -1,0 +1,36 @@
+openapi: 3.0.0
+components:
+  schemas: {}
+  securitySchemes: {}
+info:
+  title: Demo of API Documentation
+  description: This is a Demo of APIs documentation
+  version: '1'
+paths:
+  /api/message:
+    get:
+      operationId: default_message
+      summary: Gets a simple message
+      description: Demonstrates a GET method.
+      responses: {}
+    post:
+      operationId: create_message
+      summary: Create a message of you own
+      description: Demonstrates a POST method.
+      responses: {}
+  '/api/message/{name}':
+    get:
+      operationId: get_message
+      summary: Get a specific message
+      description: Demonstrates a GET specific NAME method.
+      responses: {}
+    put:
+      operationId: put_message
+      summary: Modify your message
+      description: Demonstrates a PUT method.
+      responses: {}
+    delete:
+      operationId: delete_message
+      summary: Delete a message you want
+      description: Demonstrates a DELETE method.
+      responses: {}
